@@ -39,20 +39,20 @@ public class PostContext {
     }
     
     public List<Post> getByUserId(int userId) throws ClassNotFoundException, SQLException {
-        PreparedStatement prepareStatement = db.ConnectDB.getConnection()
+        PreparedStatement prepareStatement = ConnectDB.getConnection()
                 .prepareStatement("SELECT * FROM Post WHERE UserId=?");
         prepareStatement.setInt(1, userId);
         return toList(prepareStatement.executeQuery());
     }
     
     public List<Post> getByLocation(String location) throws ClassNotFoundException, SQLException {
-        PreparedStatement prepareStatement = db.ConnectDB.getConnection()
+        PreparedStatement prepareStatement = ConnectDB.getConnection()
                 .prepareStatement("SELECT * FROM Post WHERE Location=?");
         prepareStatement.setString(1, location);
         return toList(prepareStatement.executeQuery());
     }
     public int newPost(Post post) throws ClassNotFoundException, SQLException, Exception {
-        PreparedStatement prepareStatement = db.ConnectDB.getConnection().prepareStatement("INSERT INTO Post VALUES(?,?,?,?,?,?)");
+        PreparedStatement prepareStatement = ConnectDB.getConnection().prepareStatement("INSERT INTO Post VALUES(?,?,?,?,?,?)");
         prepareStatement.setString(1, post.getUserId());
         if (post.getContent()== null) {
             prepareStatement.setNull(2, java.sql.Types.NVARCHAR);

@@ -6,9 +6,14 @@
 
 package ws;
 
+import da.PostContext;
+import da.UserContext;
+import java.sql.SQLException;
+import javax.jws.Oneway;
 import javax.jws.WebService;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
+import obj.Post;
 
 /**
  *
@@ -19,9 +24,33 @@ public class MeloteWS {
 
     /**
      * This is a sample web service operation
+     * @param name Tên đăng nhập
+     * @param password Password nhập
+     * @return 
+     * @throws java.lang.ClassNotFoundException 
+     * @throws java.sql.SQLException 
      */
-    @WebMethod(operationName = "hello")
-    public String hello(@WebParam(name = "name") String txt) {
-        return "Hello " + txt + " !";
+    @WebMethod(operationName = "checkUsername")
+    public boolean checkUsername(@WebParam(name = "name") String name,@WebParam(name = "password") String password) throws ClassNotFoundException, SQLException {
+        return new UserContext().checkPassword(name, password);
     }
+
+    /**
+     * Web service operation
+     */
+    @WebMethod(operationName = "getPostByLocation")
+    public java.util.List<obj.Post> getPostByLocation(@WebParam(name = "location") String location) throws ClassNotFoundException, SQLException {
+        //TODO write your implementation code here:
+        return new PostContext().getByLocation(location);
+    }
+
+    /**
+     * Web service operation
+     */
+    @WebMethod(operationName = "addPost")
+    public void addPost(@WebParam(name = "post") Object post) throws SQLException, Exception {
+        new PostContext().newPost((Post) post);
+    }
+    
+    
 }
