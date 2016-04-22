@@ -39,9 +39,9 @@ public class MeloteWS {
      * Web service operation
      */
     @WebMethod(operationName = "getPostByLocation")
-    public java.util.List<obj.Post> getPostByLocation(@WebParam(name = "location") String location) throws ClassNotFoundException, SQLException {
+    public java.util.List<obj.Post> getPostByLocation(@WebParam(name = "latitude") float latitude, @WebParam(name = "longtitude") float longtitude) throws ClassNotFoundException, SQLException {
         //TODO write your implementation code here:
-        return new PostContext().getByLocation(location);
+        return new PostContext().getByLocation(latitude,longtitude);
     }
 
     /**

@@ -15,18 +15,20 @@ public class Post {
     String userId;
     String content;
     String image;
-    String location;
+    float latitude;
+    float longtitude;
     int priority;
 
     public Post() {
     }
 
-    public Post(int postId, String userId, String content, String image, String location, int priority) {
+    public Post(int postId, String userId, String content, String image, float latitude, float longtitude, int priority) {
         this.postId = postId;
         this.userId = userId;
         this.content = content;
         this.image = image;
-        this.location = location;
+        this.latitude = latitude;
+        this.longtitude = longtitude;
         this.priority = priority;
     }
 
@@ -46,8 +48,20 @@ public class Post {
         return image;
     }
 
-    public String getLocation() {
-        return location;
+    public void setLatitude(float latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setLongtitude(float longtitude) {
+        this.longtitude = longtitude;
+    }
+
+    public float getLongtitude() {
+        return longtitude;
+    }
+
+    public float getLatitude() {
+        return latitude;
     }
 
     public int getPriority() {
@@ -68,10 +82,6 @@ public class Post {
 
     public void setImage(String image) {
         this.image = image;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
     }
 
     public void setPriority(int priority) {

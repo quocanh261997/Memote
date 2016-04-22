@@ -6,6 +6,7 @@
 
 package da;
 
+import com.sun.org.apache.xalan.internal.xsltc.runtime.BasisLibrary;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -29,11 +30,13 @@ public class PostContext {
             String userId = rs.getString("UserId");
             String content = rs.getString("Content");
             String image = rs.getString("Image");
-            String location = rs.getString("Location");
+            float latitude = rs.getFloat("Latitude");
+            float longtitude = rs.getFloat("Longtitude");
+            
             Date postTime = rs.getTime("PostTime");
             int priority = rs.getInt("Priority");
             
-            result.add(new Post(postId, userId, content, image, location, priority));
+            result.add(new Post(postId, userId, content, image, latitude,longtitude, priority));
         }
         return result;
     }
@@ -45,14 +48,18 @@ public class PostContext {
         return toList(prepareStatement.executeQuery());
     }
     
-    public List<Post> getByLocation(String location) throws ClassNotFoundException, SQLException {
+    public List<Post> getByLocation(float latitude,float longtitude) throws ClassNotFoundException, SQLException {
         PreparedStatement prepareStatement = ConnectDB.getConnection()
-                .prepareStatement("SELECT * FROM Post WHERE Location=?");
-        prepareStatement.setString(1, location);
-        return toList(prepareStatement.executeQuery());
+                .prepareStatement("SELECT * FROM Post WHERE (Latitude BETWEEN ? AND ?) AND (Longtitude BETWEEN ? AND ?)");
+        prepareStatement.setFloat(1,latitude-0.0001f);
+        prepareStatement.setFloat(2,latitude+0.0001f);
+        prepareStatement.setFloat(3,longtitude-0.0001f);
+        prepareStatement.setFloat(4,longtitude+0.0001f);
+        List<Post> result = toList(prepareStatement.executeQuery());
+        return result;
     }
     public int newPost(Post post) throws ClassNotFoundException, SQLException, Exception {
-        PreparedStatement prepareStatement = ConnectDB.getConnection().prepareStatement("INSERT INTO Post VALUES(?,?,?,?,?,?)");
+        PreparedStatement prepareStatement = ConnectDB.getConnection().prepareStatement("INSERT INTO Post VALUES(?,?,?,?,?,?,?)");
         prepareStatement.setString(1, post.getUserId());
         if (post.getContent()== null) {
             prepareStatement.setNull(2, java.sql.Types.NVARCHAR);
@@ -65,13 +72,11 @@ public class PostContext {
             prepareStatement.setString(3, post.getImage());
         }
         
-        if (post.getLocation()== null) {
-            throw new Exception("Location cant be null");
-        } else {
-            prepareStatement.setString(4, post.getLocation());
-        }
-        prepareStatement.setTimestamp(5, new Timestamp(new Date().getTime()));
-        prepareStatement.setInt(6, post.getPriority());
+        prepareStatement.setFloat(4, post.getLatitude());
+        prepareStatement.setFloat(5, post.getLongtitude());
+        
+        prepareStatement.setTimestamp(6, new Timestamp(new Date().getTime()));
+        prepareStatement.setInt(7, post.getPriority());
         return prepareStatement.executeUpdate();
     }
 }
